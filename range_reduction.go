@@ -46,6 +46,41 @@ func rangeReductionSingle() {
 	processFile(folder + fname, outFile)
 }
 
+func formatOneFile() {
+	usr, _ := user.Current()
+	pathName := usr.HomeDir + "/sequence_lists/blast/db/FASTA/nt.gz.txt"
+	folder := usr.HomeDir + "/sequence_lists/blast/db/FASTA/"
+	outFile, err := os.Create(folder + "nt.gz.trimmed.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var prefix string
+	var number int
+	// Open the file
+	file, err := os.Open(pathName)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+	scanner := bufio.NewScanner(file)
+	// Go line by line
+	for scanner.Scan() {
+		line := scanner.Text()
+		prefix, number, err = splitLine(line)
+		if err != nil {
+			continue
+		}
+		out := fmt.Sprintf("%s: %d\n", prefix, number)
+		outFile.WriteString(out)
+		fmt.Print(out)
+	}
+
+	if err = scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+}
+
 func processFile(pathName string, outFile *os.File) {
 	fmt.Println("File: " + pathName)
 	//count := 0

@@ -52,20 +52,19 @@ func accessionExtraction() {
 	log.Print("Finished with everything.")
 }
 
-func singleFileFlow(file string) {
+func singleFileFlow(file string) error {
 	_, err := os.Stat("sequence_lists" + file + ".txt")
 	if err == nil {
 		log.Printf("File %s is processed already.", file)
-		return
+		return err
 	}
 	log.Printf("Started: %s", file)
 
 	// Download file
 	err = rsyncFile(file)
 	if err != nil {
-		err = newErr("Error in downloading file from S3.", err)
-		log.Print(err)
-		return
+		handle("Error in downloading file from S3", err)
+		return err
 	}
 
 	// Process
@@ -87,12 +86,11 @@ func singleFileFlow(file string) {
 
 	// Delete file
 	if err = os.Remove(input); err != nil {
-		err = newErr("Error in removing file.", err)
-		log.Print(err)
-		return
+		return handle("Error in removing file.", err)
 	}
 
 	log.Printf("Finished: %s", file)
+	return err
 }
 
 func rsyncFile(file string) error {

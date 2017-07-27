@@ -24,5 +24,5 @@ func main() {
 	}()
 	log.SetOutput(io.MultiWriter(os.Stdout, logFile))
 
-	bigMatcher()
+	matchSequencesCaller()
 }

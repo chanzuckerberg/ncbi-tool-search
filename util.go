@@ -6,10 +6,20 @@ import (
 	"os/exec"
 	"bytes"
 	"time"
+	"runtime"
 )
 
 func newErr(input string, err error) error {
-	return errors.New(input + " " + err.Error())
+	err = errors.New(input + " " + err.Error())
+	log.Print(err)
+	return err
+}
+
+func handle(input string, err error) error {
+	pc, fn, line, _ := runtime.Caller(1)
+	err = errors.New(input + ". " + err.Error())
+	log.Printf("[error] in %s[%s:%d] %s", runtime.FuncForPC(pc).Name(), fn, line, input)
+	return err
 }
 
 // Outputs a system command to log with all output on error.
