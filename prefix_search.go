@@ -186,49 +186,62 @@ func accessionSearch(ctx Context, prefix string, targetNum int) (string, error) 
 	accessionNums = prefixRes.accessionNums
 	valueToFile = prefixRes.valueToFile
 
-	// Do a binary search to match the file
-	n := len(accessionNums)
-	i, j := 0, n
-	for i < j {
-		h := i + (j-i)/2 // avoid overflow when computing h
-		// i ≤ h < j
-		curRange := accessionNums[h]
-		// Dealing with a range
-		if strings.Contains(curRange, "-") {
-			pieces := strings.Split(curRange, "-")
-			endNum, err := strconv.Atoi(pieces[1])
-			if err != nil {
-				log.Fatal(err)
-			}
-			if endNum < targetNum {
-				i = h + 1
-				continue
-			} else {
-				j = h
-				continue
-			}
-		} else { // Dealing with point values
-			curVal, err := strconv.Atoi(curRange)
-			if err != nil {
-				log.Fatal("Problem converting.")
-			}
-			if curVal < targetNum {
-				i = h + 1
-				continue
-			} else {
-				j = h
-				continue
-			}
-		}
+	res, err := arraySearch(accessionNums, targetNum)
+	if err != nil {
+		return "", handle("Error in searching array", err)
 	}
 
 	// Format results
-	if i != 0 && i < len(accessionNums) {
-		resFile := valueToFile[accessionNums[i]]
+	if res > 0 && res < len(accessionNums) {
+		resFile := valueToFile[accessionNums[res]]
 		resFile = resFile[:len(resFile)-4]
-		return fmt.Sprintf("%-13s | %s", accessionNums[i], resFile), err
+		return fmt.Sprintf("%-13s | %s", accessionNums[res], resFile), err
 	}
 	return "", err
+}
+
+func arraySearch(toSearch []string, toFind int) (int, error) {
+	// Do a binary search to match the range
+	n := len(toSearch)
+	low, high := 0, n-1
+	for low <= high {
+		mid := low + (high-low)/2 // Midpoint
+		lookAt := toSearch[mid]
+
+		if !strings.Contains(lookAt, "-") {
+			// Point val in array
+			lookAtVal, err := strconv.Atoi(lookAt)
+			if err != nil {
+				return 0, handle("Problem converting number", err)
+			}
+			if lookAtVal > toFind {
+				high = mid - 1
+			} else if lookAtVal < toFind {
+				low = mid + 1
+			} else { // Found
+				return mid, err
+			}
+		} else {
+			// Range val in array
+			p := strings.Split(lookAt, "-")
+			bottom, err := strconv.Atoi(p[0]) // Lower bound
+			if err != nil {
+				return 0, handle("Problem converting number", err)
+			}
+			top, err := strconv.Atoi(p[1]) // Upper bound
+			if err != nil {
+				return 0, handle("Problem converting number", err)
+			}
+			if bottom <= toFind && toFind <= top {
+				return mid, err // Found in current range
+			} else if toFind < bottom {
+				high = mid - 1
+			} else if top < toFind {
+				low = mid + 1
+			}
+		}
+	}
+	return -1, nil // Not found.
 }
 
 func rangePiece(ctx Context, prefix string, input string) (int, string, error) {

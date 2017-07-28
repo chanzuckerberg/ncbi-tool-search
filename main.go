@@ -10,7 +10,7 @@ func main() {
 	// Set up logging
 	log.SetOutput(os.Stderr)
 	log.SetOutput(os.Stdout)
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	log.SetFlags(log.LstdFlags)
 	logFile, err := os.OpenFile("log.txt",
 		os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {

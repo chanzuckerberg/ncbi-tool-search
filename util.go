@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"time"
 	"runtime"
+	"strings"
 )
 
 func newErr(input string, err error) error {
@@ -17,9 +18,14 @@ func newErr(input string, err error) error {
 
 func handle(input string, err error) error {
 	pc, fn, line, _ := runtime.Caller(1)
-	err = errors.New(input + ". " + err.Error())
+	if input[len(input)-1:] != "." { // Add a period.
+		input += "."
+	}
+	input += " " + err.Error()
+	p := strings.Split(fn, "/")
+	fn = p[len(p)-1]
 	log.Printf("[error] in %s[%s:%d] %s", runtime.FuncForPC(pc).Name(), fn, line, input)
-	return err
+	return errors.New(input)
 }
 
 // Outputs a system command to log with all output on error.
