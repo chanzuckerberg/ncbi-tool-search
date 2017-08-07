@@ -8,23 +8,35 @@ import (
 	"time"
 	"runtime"
 	"strings"
+	"os/user"
 )
 
+// Combines string and error into new error.
 func newErr(input string, err error) error {
 	err = errors.New(input + " " + err.Error())
 	log.Print(err)
 	return err
 }
 
+// handle logs errors and information at runtime. Used for easier error tracing
+// up the call stack.
 func handle(input string, err error) error {
-	pc, fn, line, _ := runtime.Caller(1)
+	if err == nil {
+		return err
+	}
+	pc, fn, line, ok := runtime.Caller(1)
 	if input[len(input)-1:] != "." { // Add a period.
 		input += "."
 	}
 	input += " " + err.Error()
+	if !ok {
+		log.Printf("[error] %s", input)
+		return errors.New(input)
+	}
 	p := strings.Split(fn, "/")
 	fn = p[len(p)-1]
-	log.Printf("[error] in %s[%s:%d] %s", runtime.FuncForPC(pc).Name(), fn, line, input)
+	log.Printf("[error] in %s[%s:%d] %s",
+		runtime.FuncForPC(pc).Name(), fn, line, input)
 	return errors.New(input)
 }
 
@@ -76,7 +88,18 @@ func commandWithOutput(input string) (string, string, error) {
 	return outResp, errResp, err
 }
 
+// Used for time benchmarking.
 func timeTrack(start time.Time, name string) {
 	elapsed := time.Since(start)
 	log.Printf("%s took %s", name, elapsed)
+}
+
+// getUserHome gets the full path of the user's home directory.
+func getUserHome() string {
+	usr, err := user.Current()
+	if err != nil {
+		log.Print("Couldn't get user's home directory.")
+		log.Fatal(err)
+	}
+	return usr.HomeDir
 }
