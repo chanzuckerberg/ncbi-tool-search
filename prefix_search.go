@@ -1,12 +1,11 @@
 package main
 
 import (
-	"log"
-	"fmt"
-	"strings"
-	"strconv"
-	"os"
 	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
 )
 
 type context struct {

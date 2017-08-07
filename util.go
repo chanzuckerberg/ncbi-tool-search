@@ -1,14 +1,14 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"log"
 	"os/exec"
-	"bytes"
-	"time"
+	"os/user"
 	"runtime"
 	"strings"
-	"os/user"
+	"time"
 )
 
 // Combines string and error into new error.

@@ -1,15 +1,13 @@
 package main
 
 import (
-	"log"
+	"bufio"
+	"fmt"
+	"github.com/skarademir/naturalsort"
 	"io/ioutil"
 	"os"
-	"fmt"
-	"bufio"
-	"strings"
-	"os/user"
-	"github.com/skarademir/naturalsort"
 	"sort"
+	"strings"
 )
 
 // Not really used in final search routine but was helpful for learning about
@@ -33,7 +31,7 @@ func prefixExtraction() error {
 		if err != nil {
 			return handle("Error in creating out file", err)
 		}
-		processFilePrefixes(inputDir+ "/" + f.Name(), outFile)
+		processFilePrefixes(inputDir+"/"+f.Name(), outFile)
 	}
 	return err
 }
@@ -76,7 +74,7 @@ func processFilePrefixes(pathName string, outFile *os.File) error {
 		}
 	}
 	// Write results to file
-	for k, _ := range prefixSet {
+	for k := range prefixSet {
 		outFile.WriteString(fmt.Sprintf("%s\n", k))
 	}
 	if err = scanner.Err(); err != nil {
@@ -107,7 +105,7 @@ func prefixListing() error {
 	res := []string{}
 	for _, f := range files {
 		fname := f.Name()
-		fileResult, err := prefixListForFile(inputDir+ "/" + fname, fname)
+		fileResult, err := prefixListForFile(inputDir+"/"+fname, fname)
 		if err != nil {
 			return handle("Error in getting prefix list from file", err)
 		}

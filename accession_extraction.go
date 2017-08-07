@@ -1,14 +1,14 @@
 package main
 
 import (
-	"log"
-	"os"
 	"bufio"
 	"fmt"
-	"github.com/aws/aws-sdk-go/service/s3/s3manager"
-	"path/filepath"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/aws/aws-sdk-go/service/s3/s3manager"
+	"log"
+	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -29,9 +29,9 @@ func remoteFolderAccessionExtraction() {
 		originPath := topFolder + "/" + folder
 		cmd := fmt.Sprintf(template, originPath, destPath)
 		// Call rsync on the folder to get a recursive file listing.
-		stdout, _, _:= commandWithOutput(cmd)
+		stdout, _, _ := commandWithOutput(cmd)
 		lines := strings.Split(stdout, "\n")
-		lines = lines[2:len(lines)-4]
+		lines = lines[2 : len(lines)-4]
 		for _, line := range lines {
 			end := line[len(line)-7:]
 			if !strings.Contains(line, "tmpold") &&
@@ -131,7 +131,7 @@ func singleFileFlow(file string) error {
 	}
 	var cmd string
 	// Time benchmarks for optimization hints
-	defer timeTrack(time.Now(), "Processing " + file)
+	defer timeTrack(time.Now(), "Processing "+file)
 	if strings.Contains(file, "genbank") {
 		// Genbank formatting: Get the line that says ACCESSION | Get the second
 		// column.
@@ -165,7 +165,7 @@ func rsyncFile(file string) error {
 
 	home := getUserHome()
 	dir := filepath.Dir(file)
-	if err = os.MkdirAll(home + "/source_files" + dir, os.ModePerm); err != nil {
+	if err = os.MkdirAll(home+"/source_files"+dir, os.ModePerm); err != nil {
 		return handle("Error in making destination dir", err)
 	}
 
@@ -200,14 +200,14 @@ func downloadFile(downloader *s3manager.Downloader, file string) error {
 	}
 
 	dir := filepath.Dir(file)
-	if err = os.MkdirAll("source_files" + dir, os.ModePerm); err != nil {
+	if err = os.MkdirAll("source_files"+dir, os.ModePerm); err != nil {
 		return handle("Error in making source_files dir", err)
 	}
 	to_create := "source_files" + file
 	log.Print("File to create: " + to_create)
 	f, err := os.Create(to_create)
 	if err != nil {
-		return handle("Failed to create file: " + to_create, err)
+		return handle("Failed to create file: "+to_create, err)
 	}
 	_, err = downloader.Download(f, &s3.GetObjectInput{
 		Bucket: aws.String("czbiohub-ncbi-store"),

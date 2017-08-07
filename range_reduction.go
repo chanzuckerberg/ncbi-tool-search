@@ -1,13 +1,13 @@
 package main
 
 import (
-	"io/ioutil"
-	"fmt"
-	"os"
 	"bufio"
+	"fmt"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
-	"path/filepath"
 )
 
 // Takes in a directory and creates copies of the files with point values
@@ -28,7 +28,7 @@ func rangeReduction() error {
 		if err != nil {
 			return handle("Error in making out file", err)
 		}
-		processFile(dir + "/" + f.Name(), outFile)
+		processFile(dir+"/"+f.Name(), outFile)
 	}
 	return err
 }
@@ -43,7 +43,7 @@ func rangeReductionSingle() error {
 	if err != nil {
 		return handle("Error in creating out file", err)
 	}
-	processFile(folder + fname, outFile)
+	processFile(folder+fname, outFile)
 	return err
 }
 
@@ -56,7 +56,7 @@ func trimWholeDir() {
 			return nil
 		}
 		if err = formatOneFile(path); err != nil {
-			return handle("Error in formatting file: " + path, err)
+			return handle("Error in formatting file: "+path, err)
 		}
 		return nil
 	})
@@ -85,7 +85,7 @@ func formatOneFile(input string) error {
 	// Open the file
 	file, err := os.Open(input)
 	if err != nil {
-		return handle("Error in opening file: " + input, err)
+		return handle("Error in opening file: "+input, err)
 	}
 	defer file.Close()
 	scanner := bufio.NewScanner(file)
