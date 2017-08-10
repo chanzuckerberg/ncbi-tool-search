@@ -1,10 +1,6 @@
 * Unpolished script-style utility and example functions used in NCBI NT/NR research and experimentation to match sequences by accession number to smaller files.
 
-* Components:
-  * Sync service: https://github.com/chanzuckerberg/ncbi-tool-sync
-  * Server service: https://github.com/chanzuckerberg/ncbi-tool-server
-  * Command line client: https://github.com/chanzuckerberg/ncbi-tool-cliclient
-  * Search tool utility: https://github.com/chanzuckerberg/ncbi-tool-search
+- Link to Usage and Development Notes and Project Write-Up: https://czi.quip.com/rwBgAebQg2Fa
 
 - Folder structure for search utility functions:
   - accession_extraction.go

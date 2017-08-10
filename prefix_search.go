@@ -9,12 +9,12 @@ import (
 )
 
 type context struct {
-	searchDirA       string
-	searchDirB       string
-	prefixCache      map[string]prefixResult
-	outFile          *os.File
-	notFoundPrefixes map[string]int
-	curPrefix        string
+	searchDirA       string // First search directory to include
+	searchDirB       string // Second search directory to include
+	prefixCache      map[string]prefixResult // Cache of results for prefixes
+	outFile          *os.File // File for writing out results
+	notFoundPrefixes map[string]int // Counts of sequences not found by prefix
+	curPrefix        string // curPrefix for some cache optimization
 }
 
 // Example of a caller function for matching sequences from a big file to
