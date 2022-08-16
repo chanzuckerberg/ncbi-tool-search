@@ -1,5 +1,11 @@
 * Unpolished script-style utility and example functions used in NCBI NT/NR research and experimentation to match sequences by accession number to smaller files.
 
+## Archived
+
+This repository was created for experimental purposes and is no longer maintained or used.
+
+## Usage
+
 - Link to Usage and Development Notes and Project Write-Up: https://czi.quip.com/rwBgAebQg2Fa
 
 - Folder structure for search utility functions:
